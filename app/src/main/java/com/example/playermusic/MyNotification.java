@@ -8,27 +8,32 @@ import android.content.Context;
 import android.content.Intent;
 import android.widget.RemoteViews;
 
+import androidx.core.app.NotificationCompat;
+
 
 //https://stackoverflow.com/questions/12526228/how-to-put-media-controller-button-on-notification-bar
 public class MyNotification extends Notification {
 
-    private Context ctx;
+    private static Context ctx;
     private NotificationManager mNotificationManager;
+    public static Notification notification = null;
 
     @SuppressLint("NewApi")
-    public MyNotification(Context ctx){
+    public MyNotification(Context pctx){
         super();
-        this.ctx=ctx;
+        ctx=pctx;
         String ns = Context.NOTIFICATION_SERVICE;
         mNotificationManager = (NotificationManager) ctx.getSystemService(ns);
         CharSequence tickerText = "Shortcuts";
         long when = System.currentTimeMillis();
         Notification.Builder builder = new Notification.Builder(ctx);
 
-        Notification notification=builder.build();
+        notification=builder.build();
         notification.when=when;
         notification.tickerText=tickerText;
         notification.icon=R.mipmap.ic_launcher;
+
+        setContentViewToNotfication();
 
         /*Intent notificationIntent = new Intent(ctx, MainActivity.class);
 
@@ -38,21 +43,33 @@ public class MyNotification extends Notification {
         PendingIntent intent = PendingIntent.getActivity(ctx, 0,
                 notificationIntent, 0);*/
 
-        RemoteViews contentView=new RemoteViews(ctx.getPackageName(), R.layout.notification_layout);
 
-        //set the button listeners
-        setListeners(contentView);
-
-        notification.contentView = contentView;
         //notification.contentIntent = intent;
         notification.flags |= Notification.FLAG_FOREGROUND_SERVICE;
         notification.flags |= Notification.FLAG_NO_CLEAR;
         notification.flags |= Notification.FLAG_ONGOING_EVENT;
         CharSequence contentTitle = "From Shortcuts";
         mNotificationManager.notify(548853, notification);
+
+
     }
 
-    public void setListeners(RemoteViews view){
+
+
+    public static void setContentViewToNotfication() {
+        RemoteViews contentView=new RemoteViews(ctx.getPackageName(), R.layout.notification_layout_pause );
+
+        if (MyService.isInstanceCreated()) {
+            contentView=new RemoteViews(ctx.getPackageName(), R.layout.notification_layout);
+        }
+
+        //set the button listeners
+        setListeners(contentView);
+
+        notification.contentView = contentView;
+    }
+
+    public static void setListeners(RemoteViews view){
         //radio listener
         /*Intent radio=new Intent(ctx,HelperActivity.class);
         radio.putExtra("DO", "radio");
@@ -95,6 +112,7 @@ public class MyNotification extends Notification {
         app2.putExtra("DO", "stop");
         PendingIntent pApp2 = PendingIntent.getBroadcast(ctx, 5, app2, 0);
         view.setOnClickPendingIntent(R.id.btn2, pApp2);
+
 
 
     }

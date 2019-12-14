@@ -20,11 +20,13 @@ public class HelperActivity extends BroadcastReceiver {
 
             context.stopService(new Intent(context, MyService.class));
             context.startService(new Intent(context, MyService.class));
+
             Log.d("DEBUG_RADIO","app foi chamado");
         } else if (action.equals("stop")) {
             context.stopService(new Intent(context, MyService.class));
             Log.d("DEBUG_RADIO","stop foi chamado");
         }
+        //MyNotification.setContentViewToNotfication();
     }
     /*
     private HelperActivity ctx;

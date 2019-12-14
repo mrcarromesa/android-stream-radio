@@ -17,21 +17,23 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        showNotification()
+
 
         buttonStart.setOnClickListener{
             startService(Intent(this, MyService::class.java))
+            showNotification()
         }
 
         buttonStop.setOnClickListener{
             stopService(Intent(this, MyService::class.java))
+            showNotification()
         }
 
     }
 
 
     fun showNotification() {
-        MyNotification(this)
+        //MyNotification(this)
         //finish()
     }
 }

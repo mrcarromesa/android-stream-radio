@@ -33,6 +33,14 @@ public class MyService extends Service {
 
     private SimpleExoPlayer player1;
 
+    private static MyService instance = null;
+
+    public static boolean isInstanceCreated() {
+        return instance != null;
+    }
+
+
+
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
@@ -43,6 +51,7 @@ public class MyService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         //getting systems default ringtone
 
+        instance = this;
         if (player1 == null) {
             startPlayer();
         }
@@ -166,14 +175,30 @@ public class MyService extends Service {
         player1.setPlayWhenReady(true);
     }
 
+    public void  showNotification() {
+        Context ctx = this;
+        new MyNotification(ctx);
+        //finish()
+    }
 
 
 
     @Override
+    public void onCreate()
+    {
+        super.onCreate();
+        showNotification();
+        instance = this;
+
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
+        showNotification();
         player1.stop();
         player1.release();
+        instance = null;
 
         //stopping the player when service is destroyed
 //        player.stop();
